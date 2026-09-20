@@ -1,0 +1,198 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackduck-detect
+  labels: &detectLabels
+    app.kubernetes.io/name: blackduck-detect
+    app.kubernetes.io/part-of: black-duck-sca
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *detectLabels
+  template:
+    metadata:
+      labels: *detectLabels
+    spec:
+      serviceAccountName: blackduck-wrapper
+      containers:
+        - name: wrapper
+          image: your-registry/blackduck-detect-wrapper:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SCAN_OPERATION
+              value: detector
+          envFrom:
+            - configMapRef:
+                name: blackduck-wrapper-config
+            - secretRef:
+                name: blackduck-credentials
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackduck-signature
+  labels: &signatureLabels
+    app.kubernetes.io/name: blackduck-signature
+    app.kubernetes.io/part-of: black-duck-sca
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *signatureLabels
+  template:
+    metadata:
+      labels: *signatureLabels
+    spec:
+      serviceAccountName: blackduck-wrapper
+      containers:
+        - name: wrapper
+          image: your-registry/blackduck-signature-wrapper:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SCAN_OPERATION
+              value: signature
+          envFrom:
+            - configMapRef: {name: blackduck-wrapper-config}
+            - secretRef: {name: blackduck-credentials}
+          ports:
+            - {name: http, containerPort: 8080}
+          readinessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackduck-bdba
+  labels: &bdbaLabels
+    app.kubernetes.io/name: blackduck-bdba
+    app.kubernetes.io/part-of: black-duck-sca
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *bdbaLabels
+  template:
+    metadata:
+      labels: *bdbaLabels
+    spec:
+      serviceAccountName: blackduck-wrapper
+      containers:
+        - name: wrapper
+          image: your-registry/blackduck-bdba-wrapper:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SCAN_OPERATION
+              value: binary
+          envFrom:
+            - configMapRef: {name: blackduck-wrapper-config}
+            - secretRef: {name: blackduck-credentials}
+          ports:
+            - {name: http, containerPort: 8080}
+          readinessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackduck-image
+  labels: &imageLabels
+    app.kubernetes.io/name: blackduck-image
+    app.kubernetes.io/part-of: black-duck-sca
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *imageLabels
+  template:
+    metadata:
+      labels: *imageLabels
+    spec:
+      serviceAccountName: blackduck-wrapper
+      containers:
+        - name: wrapper
+          image: your-registry/blackduck-image-wrapper:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SCAN_OPERATION
+              value: image
+          envFrom:
+            - configMapRef: {name: blackduck-wrapper-config}
+            - secretRef: {name: blackduck-credentials}
+          ports:
+            - {name: http, containerPort: 8080}
+          readinessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: tmp
+          emptyDir: {}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blackduck-wrapper-config
+data:
+  BLACKDUCK_URL: "https://blackduck.example.com"
+  BLACKDUCK_PROJECT_GROUP: "default-group"
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: "localhost,127.0.0.1,.svc,.cluster.local"
+  SCAN_JOB_NAMESPACE: "blackduck"
+  SOURCE_TIMEOUT_SECONDS: "1800"
+  BINARY_TIMEOUT_SECONDS: "1800"
+  IMAGE_TIMEOUT_SECONDS: "3600"
+  SOURCE_MAX_CONCURRENCY: "5"
+  BINARY_MAX_CONCURRENCY: "5"
+  IMAGE_MAX_CONCURRENCY: "8"

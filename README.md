@@ -46,16 +46,19 @@ Proxy 使用標準 `HTTP_PROXY=http://xxx.xx.xx:xx`、`HTTPS_PROXY=http://xxx.xx
 
 完整逐步操作可直接開啟 `deploy_step.html`。
 
-## WSL 完整模擬
+## Kubernetes 部署
 
-模擬不會連真實 Black Duck；它會啟動本機 wrapper mock、送出 source 與 image-deep，並輪詢到完成：
+`k8s/` 包含 Namespace、ConfigMap、ServiceAccount/RBAC、四組 Deployment 與 Service。先替換 `k8s/workloads.yaml` 的 wrapper image，建立正式 Secret，再部署：
 
 ```bash
-chmod +x scripts/run_wsl_simulation.sh
-./scripts/run_wsl_simulation.sh
+kubectl apply -f k8s/namespace.yaml
+kubectl -n blackduck create secret generic blackduck-credentials \
+  --from-literal=BLACKDUCK_API_TOKEN='REPLACE_ME'
+kubectl apply -k k8s
+kubectl -n blackduck get deploy,svc,pods
 ```
 
-使用的測試設定在 `assets/.env.wsl.example`。Mock 服務程式是 `scripts/mock_blackduck_service.py`。
+`k8s/secret.example.yaml` 只提供欄位範例，不會被 `kustomization.yaml` 自動套用。正式環境應由 Secret Manager、External Secrets 或受控部署流程建立 Token。
 
 ## 單筆掃描
 

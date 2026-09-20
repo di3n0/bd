@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: blackduck-detect
+spec:
+  selector:
+    app.kubernetes.io/name: blackduck-detect
+  ports:
+    - {name: http, port: 80, targetPort: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blackduck-signature
+spec:
+  selector:
+    app.kubernetes.io/name: blackduck-signature
+  ports:
+    - {name: http, port: 80, targetPort: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blackduck-bdba
+spec:
+  selector:
+    app.kubernetes.io/name: blackduck-bdba
+  ports:
+    - {name: http, port: 80, targetPort: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blackduck-image
+spec:
+  selector:
+    app.kubernetes.io/name: blackduck-image
+  ports:
+    - {name: http, port: 80, targetPort: http}

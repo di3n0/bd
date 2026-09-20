@@ -1,0 +1,22 @@
+{
+  "jobs": [
+    {
+      "mode": "source",
+      "target": ".",
+      "project": "demo-source",
+      "version": "1.0.0"
+    },
+    {
+      "mode": "image",
+      "target": "registry.example.com/team/app:1.0.0",
+      "project": "demo-image",
+      "version": "1.0.0"
+    },
+    {
+      "mode": "image-deep",
+      "target": "registry.example.com/team/base:2026.09",
+      "project": "base-image",
+      "version": "2026.09"
+    }
+  ]
+}

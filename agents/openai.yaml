@@ -1,0 +1,6 @@
+interface:
+  display_name: "Black Duck SCA Service"
+  short_description: "Route Black Duck scans to configured K8s services"
+  default_prompt: "Use $black-duck-sca-service to prepare or run a Black Duck scan through the configured K8s services."
+policy:
+  allow_implicit_invocation: true
